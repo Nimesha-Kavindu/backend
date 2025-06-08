@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import Student from './models/student.js';
 
 
 const app = express();
@@ -25,14 +26,6 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
     console.log(req.body);
-
-    const studentSchema = new mongoose.Schema({
-        name: String,
-        age: Number,
-        possition: String
-    });
-
-    const Student = mongoose.model('Student', studentSchema);
 
     const student = new Student({
         name: req.body.name,
