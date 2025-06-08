@@ -19,5 +19,3 @@ mongoose.connect("mongodb+srv://Nimesha:nimesha@cluster0.mshl9m6.mongodb.net/?re
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 });
-
-//mongodb+srv://Nimesha:nimesha@cluster0.mshl9m6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
