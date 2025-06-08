@@ -1,11 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import Student from './models/student.js';
+import studentRouter from './routes/studentRouter.js';
 
 
 const app = express();
 app.use(bodyParser.json());
+app.use('/students', studentRouter);
 
 mongoose.connect("mongodb+srv://Nimesha:nimesha@cluster0.mshl9m6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0").then(
     () => {
@@ -13,44 +14,6 @@ mongoose.connect("mongodb+srv://Nimesha:nimesha@cluster0.mshl9m6.mongodb.net/?re
     }
 ).catch((err) => {
     console.error('Error connecting to MongoDB:', err);
-});
-
-
-app.get('/', (req, res) => {
-    Student.find().then(
-        (data) => {
-            res.json(data);
-        }
-    ).catch(
-        () => {
-            res.json({
-                message: 'Error fetching students'
-            })
-        }
-    );
-})
-
-
-app.post('/', (req, res) => {
-    console.log(req.body);
-
-    const student = new Student({
-        name: req.body.name,
-        age: req.body.age,
-        possition: req.body.possition
-    });
-
-    student.save().then(() => {
-        res.json({
-            message: 'Student saved successfully',
-            student: student
-        });
-    }).catch((err) => {
-        console.error('Error saving student:', err);
-        res.status(500).json({
-            message: 'Error saving student',
-        });
-    });
 });
 
 app.listen(3000, () => {
