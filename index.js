@@ -2,11 +2,13 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import studentRouter from './routes/studentRouter.js';
+import productsRouter from './routes/productsRouter.js';
 
 
 const app = express();
 app.use(bodyParser.json());
 app.use('/students', studentRouter);
+app.use('/products', productsRouter); // Placeholder for products route
 
 mongoose.connect("mongodb+srv://Nimesha:nimesha@cluster0.mshl9m6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0").then(
     () => {
