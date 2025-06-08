@@ -23,6 +23,36 @@ app.get('/', (req, res) => {
     console.log(req.body.name);
 })
 
+app.post('/', (req, res) => {
+    console.log(req.body);
+
+    const studentSchema = new mongoose.Schema({
+        name: String,
+        age: Number,
+        possition: String
+    });
+
+    const Student = mongoose.model('Student', studentSchema);
+
+    const student = new Student({
+        name: req.body.name,
+        age: req.body.age,
+        possition: req.body.possition
+    });
+
+    student.save().then(() => {
+        res.json({
+            message: 'Student saved successfully',
+            student: student
+        });
+    }).catch((err) => {
+        console.error('Error saving student:', err);
+        res.status(500).json({
+            message: 'Error saving student',
+        });
+    });
+});
+
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 });
