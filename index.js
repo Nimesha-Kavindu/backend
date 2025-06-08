@@ -4,10 +4,34 @@ import mongoose from 'mongoose';
 import studentRouter from './routes/studentRouter.js';
 import productsRouter from './routes/productsRouter.js';
 import userRouter from './routes/userRouter.js';
+import jwt from 'jsonwebtoken';
 
 
 const app = express();
 app.use(bodyParser.json());
+
+app.use(
+    (req, res, next) => {
+        const tokenString = req.header("Authorization");
+        if(tokenString != null) {
+            const token = tokenString.replace("Bearer ", "");
+            console.log(token);
+
+            jwt.verify(token, "mysecretkey", 
+                (err, decoded) => {
+                    if (decoded != null) {
+                        req.user = decoded;
+                        next();
+                    }else{
+                        console.log(err);
+                    }
+                }
+            )
+        }
+        
+    }
+)
+
 app.use('/students', studentRouter);
 app.use('/products', productsRouter); 
 app.use('/users', userRouter);

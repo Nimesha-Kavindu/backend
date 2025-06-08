@@ -1,5 +1,6 @@
 import User from "../models/users.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export function createUser(req, res) {
 
@@ -38,30 +39,37 @@ export function loginUser(req, res) {
     const email = req.body.email;
     const password = req.body.password;
 
-    User.findOne({email: email}).then((user) => {
-        if (!user) {
-            return res.status(404).json({
+    User.findOne({ email: email }).then((user) => {
+        if (user === null) {
+            res.status(404).json({
                 message: 'User not found'
             });
-        }
+        } else {
+            const isPasswordValid = bcrypt.compareSync(password, user.password);
+            if (isPasswordValid) {
 
-        const isPasswordValid = bcrypt.compareSync(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({
-                message: 'Invalid password'
-            });
-        }
+                const token = jwt.sign(
+                    {
+                        email: user.email,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        role: user.role,
+                        img: user.img
+                    },
+                    "mysecretkey"
+                )
 
-        res.json({
-            message: 'Login successful',
-            user: {
-                id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                role: user.role,
-                img: user.img
+                res.json({
+                    message: 'Login successful',
+                    token : token,
+                });
+            } else {
+                res.status(401).json({
+                    message: 'Invalid password'
+                });
             }
-        });
+        }
+
+
     })
 }
