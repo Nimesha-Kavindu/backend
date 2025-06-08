@@ -17,12 +17,19 @@ mongoose.connect("mongodb+srv://Nimesha:nimesha@cluster0.mshl9m6.mongodb.net/?re
 
 
 app.get('/', (req, res) => {
-    res.json({
-        message: 'hi, this is a simple express server',
-    });
-
-    console.log(req.body.name);
+    Student.find().then(
+        (data) => {
+            res.json(data);
+        }
+    ).catch(
+        () => {
+            res.json({
+                message: 'Error fetching students'
+            })
+        }
+    );
 })
+
 
 app.post('/', (req, res) => {
     console.log(req.body);
