@@ -15,7 +15,7 @@ app.use(
         const tokenString = req.header("Authorization");
         if(tokenString != null) {
             const token = tokenString.replace("Bearer ", "");
-            console.log(token);
+            //console.log(token);
 
             jwt.verify(token, "mysecretkey", 
                 (err, decoded) => {
@@ -24,9 +24,14 @@ app.use(
                         next();
                     }else{
                         console.log(err);
+                        res.status(401).json({
+                            message: 'Unauthorized'
+                        });
                     }
                 }
             )
+        }else{
+            next();
         }
         
     }
