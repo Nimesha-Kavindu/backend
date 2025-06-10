@@ -1,31 +1,24 @@
 import Product from "../models/product.js";
+import { isAdmin } from "./userController.js";
 
 export function addProduct(req, res) {
 
-    if(req.user == null) {
+    if (!isAdmin(req)) {
         return res.status(403).json({
-            message: 'Unauthorized'
-        });
-    }else if(req.user.role != 'admin') {
-        return res.status(403).json({
-            message: 'Forbidden: Only admins can add products'
+            message: 'You are not authorized to add a product'
         });
     }
 
-    const product = new Product({
-        name: req.body.name,
-        price: req.body.price,
-        category: req.body.category,
-        stock: req.body.stock
-    })
+    const product = new Product(req.body);
+
     product.save().then(
-        ()=>{
+        () => {
             res.json({
                 message: 'Product saved successfully',
             });
         }
     ).catch(
-        ()=>{
+        () => {
             res.json({
                 message: 'Error saving product',
             });
@@ -33,16 +26,44 @@ export function addProduct(req, res) {
     )
 }
 
-export function getProducts(req, res) {
-    Product.find().then(
-        (data) => {
-            res.json(data);
+export async function getProducts(req, res) {
+    try {
+
+        if (isAdmin(req)) {
+            const products = await Product.find();
+            res.json(products);
         }
-    ).catch(
-        () => {
-            res.json({
-                message: 'Error fetching products'
-            });
+        else {
+            const products = await Product.find({ isAvailable: true });
+            res.json(products);
         }
-    );
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error fetching products',
+            error: error.message
+        });
+    }
+}
+
+export async function deleteProduct(req, res) {
+    if (!isAdmin(req)) {
+        return res.status(403).json({
+            message: 'You are not authorized to delete a product'
+        });
+    }
+
+    try {
+        await Product.deleteOne({ prodctId: req.params.productId });
+
+        res.json({
+            message: 'Product deleted successfully',
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            message: 'Error deleting product',
+            error: error.message
+        });
+    }
 }

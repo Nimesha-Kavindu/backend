@@ -4,6 +4,20 @@ import jwt from "jsonwebtoken";
 
 export function createUser(req, res) {
 
+    if (req.body.role == 'admin') {
+        if (req.user != null) {
+            if (req.user.role != 'admin') {
+                return res.status(403).json({
+                    message: 'You are not authorized to create an admin account'
+                });
+            }
+        } else {
+            return res.status(403).json({
+                message: 'You are not authorized to create an admin account. please login first'
+            });
+        }
+    }
+
     const hashPassword = bcrypt.hashSync(req.body.password, 10);
 
     const user = new User({
@@ -61,7 +75,7 @@ export function loginUser(req, res) {
 
                 res.json({
                     message: 'Login successful',
-                    token : token,
+                    token: token,
                 });
             } else {
                 res.status(401).json({
@@ -72,4 +86,16 @@ export function loginUser(req, res) {
 
 
     })
+}
+
+export function isAdmin(req, res) {
+    if (req.user == null) {
+        return false
+    };
+
+    if (req.user.role != 'admin') {
+        return false;
+    }
+
+    return true;
 }
