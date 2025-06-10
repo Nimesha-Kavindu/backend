@@ -9,7 +9,7 @@ export function addProduct(req, res) {
         });
     }
 
-    const product = new Product(req.body);
+    const product = new Product(req.body);   
 
     product.save().then(
         () => {
@@ -66,4 +66,28 @@ export async function deleteProduct(req, res) {
             error: error.message
         });
     }
+}
+
+export async function updateProduct(req, res) {
+    if (!isAdmin(req)) {
+        return res.status(403).json({
+            message: 'You are not authorized to update a product'
+        });
+    }
+
+    const productId = req.params.productId;
+    const updatingData = req.body;
+
+    try{
+        await Product.updateOne({ productId: productId }, updatingData);
+        res.json({
+            message: 'Product updated successfully',
+        });
+    }catch{
+        res.status(500).json({
+            message: 'Internal server error',
+            error: error.message
+        });
+    }
+
 }
