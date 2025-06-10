@@ -91,3 +91,36 @@ export async function updateProduct(req, res) {
     }
 
 }
+
+export async function getProductById(req, res) {
+    const productId = req.params.productId;
+
+        try{
+            const product = await Product.findOne({ productId: productId });
+
+            if(product == null) {
+                return res.status(404).json({
+                    message: 'Product not found'
+                });
+            }
+            
+            if(product.isAvailable) {
+                res.json(product);
+            }else{
+                if(!isAdmin(req)) {
+                    return res.status(403).json({
+                        message: 'Product is not available'
+                    });
+                }else {
+                    res.json(product);
+                }
+            }
+
+        }catch(error) {
+            res.status(500).json({
+                message: 'Internal server error',
+                error: error.message
+            });
+        }
+
+}
