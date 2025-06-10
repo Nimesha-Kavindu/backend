@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import productsRouter from './routes/productsRouter.js';
 import userRouter from './routes/userRouter.js';
 import jwt from 'jsonwebtoken';
+import orderRouter from './routes/orderRout.js';
 
 
 const app = express();
@@ -38,6 +39,7 @@ app.use(
 
 app.use('/products', productsRouter); 
 app.use('/users', userRouter);
+app.use('/orders', orderRouter)
 
 mongoose.connect("mongodb+srv://Nimesha:nimesha@cluster0.mshl9m6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0").then(
     () => {

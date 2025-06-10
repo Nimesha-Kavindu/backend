@@ -54,7 +54,7 @@ export async function deleteProduct(req, res) {
     }
 
     try {
-        await Product.deleteOne({ prodctId: req.params.productId });
+        await Product.deleteOne({ productId: req.params.productId });
 
         res.json({
             message: 'Product deleted successfully',
@@ -103,7 +103,7 @@ export async function getProductById(req, res) {
                     message: 'Product not found'
                 });
             }
-            
+
             if(product.isAvailable) {
                 res.json(product);
             }else{
