@@ -37,9 +37,9 @@ app.use(
     }
 )
 
-app.use('/products', productsRouter); 
-app.use('/users', userRouter);
-app.use('/orders', orderRouter)
+app.use('/api/products', productsRouter); 
+app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter)
 
 mongoose.connect("mongodb+srv://Nimesha:nimesha@cluster0.mshl9m6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0").then(
     () => {
