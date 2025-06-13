@@ -5,9 +5,13 @@ import productsRouter from './routes/productsRouter.js';
 import userRouter from './routes/userRouter.js';
 import jwt from 'jsonwebtoken';
 import orderRouter from './routes/orderRout.js';
+import cors from 'cors';
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use(
@@ -41,7 +45,7 @@ app.use('/api/products', productsRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter)
 
-mongoose.connect("mongodb+srv://Nimesha:nimesha@cluster0.mshl9m6.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0").then(
+mongoose.connect(process.env.MONGODB_URL).then(
     () => {
         console.log('Connected to MongoDB');
     }
